@@ -18,3 +18,6 @@ itemTitle[0].textContent = "Область видимости и замыкан�
 itemTitle[1].textContent = "This и прототипы объектов";
 itemTitle[3].textContent = "Асинхронная обработка и оптимизация";
 itemTitle[4].textContent = "ES6 и не только";
+
+const ads = document.getElementsByClassName('ads')[0];
+ads.remove();
