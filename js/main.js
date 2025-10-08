@@ -14,5 +14,7 @@ items[2].after(items[0]);
 items[3].after(items[2]);
 
 
-//itemTitle[0].textContent = ""
-
+itemTitle[0].textContent = "Область видимости и замыкание";
+itemTitle[1].textContent = "This и прототипы объектов";
+itemTitle[3].textContent = "Асинхронная обработка и оптимизация";
+itemTitle[4].textContent = "ES6 и не только";
