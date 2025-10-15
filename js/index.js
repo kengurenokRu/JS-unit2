@@ -67,10 +67,12 @@
 
   const createRow = (obj) => {
     const trLast = document.querySelectorAll('tr');
-    const numb = +trLast[trLast.length - 1].firstElementChild.textContent + 1;
+    let numb
+    if (trLast[trLast.length - 1].firstElementChild.textContent === '№') numb = 1;
+    else numb = +trLast[trLast.length - 1].firstElementChild.textContent + 1;
     const tr = `
-<tr>
-                <td class="table__cell ">${numb}</td>
+<tr class = "good">
+                <td class="table__cell table__cell_number">${numb}</td>
                 <td class="table__cell table__cell_left table__cell_name" data-id="${obj.id}">
                   <span class="table__cell-id">id: ${obj.id}</span>${obj.title}</td>
                 <td class="table__cell table__cell_left">${obj.category}</td>
@@ -97,11 +99,36 @@
     }
   }
 
+  const deleteGood = (id, goods) => {
+    const tempGoods = goods;
+    goods.forEach((good, index) => {
+      if (good.id == id) goods.splice(index, 1)
+    });
+  return tempGoods;
+  }
+
+  const newNumberRows = () => {
+    const tableCellNumber = document.querySelectorAll('.table__cell_number');
+    tableCellNumber.forEach((el, i) => {
+      el.textContent = i+1;
+    })
+  }
+
   const init = (goods) => {
     const overlay = document.querySelector('.overlay');
-    const modalClose = document.querySelector('.modal__close');
     const panelAddGoods = document.querySelector('.panel__add-goods');
-    const overlayModal = document.querySelector('.overlay__modal');
+    const tableBody = document.querySelector('.table__body');
+
+    tableBody.addEventListener('click', e => {
+      if (e.target.closest('.table__cell_btn-wrapper')) {
+        e.target.closest('.good').remove();
+        const id = e.target.closest('.good').children[1].dataset.id;
+        goods = deleteGood(id, goods);
+        console.log(goods);
+        newNumberRows();
+      }
+    });
+
 
     overlay.classList.remove('active');
 
@@ -109,16 +136,9 @@
       overlay.classList.add('active');
     });
 
-    overlay.addEventListener('click', () => {
-      overlay.classList.remove('active');
-    });
-
-    overlayModal.addEventListener('click', event => {
-      event.stopPropagation();
-    });
-
-    modalClose.addEventListener('click', () => {
-      overlay.classList.remove('active');
+    overlay.addEventListener('click', e => {
+      if ((e.target === overlay) || (e.target.closest('.modal__close')))
+        overlay.classList.remove('active');
     });
 
     renderGoods(goods);
