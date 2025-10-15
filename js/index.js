@@ -1,5 +1,5 @@
 'use strict';
-
+{
 const goodsList = [
   {
     "id": 1,
@@ -58,35 +58,12 @@ const goodsList = [
     }
   }
 ]
-
+/*
 const title = document.getElementsByClassName('modal__title');
 const form = document.getElementsByClassName('modal__form');
 const checkbox = document.getElementsByClassName('modal__checkbox');
 const labelCheckbox = document.querySelector('.modal__checkbox-wrapper').previousElementSibling;
-
-
-const overlay = document.querySelector('.overlay');
-const modalClose = document.querySelector('.modal__close');
-const panelAddGoods = document.querySelector('.panel__add-goods');
-const overlayModal = document.querySelector('.overlay__modal');
-
-overlay.classList.remove('active');
-
-panelAddGoods.addEventListener('click', () =>{
-  overlay.classList.add('active');
-});
-
-overlay.addEventListener('click', () =>{
-  overlay.classList.remove('active');
-});
-
-overlayModal.addEventListener('click', event =>{
-  event.stopPropagation();
-});
-
-modalClose.addEventListener('click', () =>{
-  overlay.classList.remove('active');
-});
+*/
 
 const createRow = (obj) => {
   const trLast = document.querySelectorAll('tr');
@@ -120,4 +97,32 @@ const renderGoods = (goods) =>{
   }
 }
 
-renderGoods(goodsList);
+const init = (goods) =>{
+  const overlay = document.querySelector('.overlay');
+  const modalClose = document.querySelector('.modal__close');
+  const panelAddGoods = document.querySelector('.panel__add-goods');
+  const overlayModal = document.querySelector('.overlay__modal');
+
+  overlay.classList.remove('active');
+
+  panelAddGoods.addEventListener('click', () =>{
+    overlay.classList.add('active');
+  });
+
+  overlay.addEventListener('click', () =>{
+    overlay.classList.remove('active');
+  });
+
+  overlayModal.addEventListener('click', event =>{
+    event.stopPropagation();
+  });
+
+  modalClose.addEventListener('click', () =>{
+    overlay.classList.remove('active');
+  });
+
+  renderGoods(goods);
+}
+
+window.render = init(goodsList);
+}
