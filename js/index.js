@@ -61,9 +61,9 @@
 
   const sumGoods = (goods) => {
     return goods.reduce((sum, el) => {
-    return sum + (el.count * el.price) * (1 - el.discount_count / 100.00);
-  }, 0);
-}
+      return sum + (el.count * el.price) * (1 - el.discount_count / 100.00);
+    }, 0);
+  }
 
   const addTotalPrice = (cmsTotalPrice, goods) => {
     cmsTotalPrice.textContent = `$ ${sumGoods(goods)}`;
@@ -78,6 +78,10 @@
   };
 
   const createRow = (obj) => {
+    console.log(obj);
+    console.log(obj.price);
+    console.log(obj.count);
+    console.log(obj.discount_count);
     const trLast = document.querySelectorAll('tr');
     let numb
     if (trLast[trLast.length - 1].firstElementChild.textContent === '№') numb = 1;
@@ -151,45 +155,48 @@
     });
 
     overlay.addEventListener('click', e => {
-      if ((e.target === overlay) || (e.target.closest('.modal__close')))
+      if ((e.target === overlay) || (e.target.closest('.modal__close'))) {
         closeModal();
+        const form = document.querySelector('.modal__form');
+        form.reset();
+        discountCountDisabled(form);
+      }
     });
-
+    const discountCountDisabled = (form) => {
+      form.elements.discount_count.setAttribute('disabled', true);
+    }
     form.addEventListener('submit', e => {
       e.preventDefault();
       const formData = new FormData(e.target);
       const good = Object.fromEntries(formData);
       good.id = document.querySelector('.vendor-code__id').textContent;
+      if (!('discount_count' in good))
+        good.discount_count = 0;
       addGoodData(good);
       console.log(good);
       addGood(table, good);
       form.reset();
+      discountCountDisabled(form);
       closeModal();
       addTotalPrice(cmsTotalPrice, goods);
     });
 
     form.addEventListener('change', e => {
       if (e.target.type === 'checkbox') {
-        const inputDiscount = document.querySelector('.modal__input_discount');
         if (e.target.checked) {
-          inputDiscount.removeAttribute('disabled');
+          form.elements.discount_count.removeAttribute('disabled');
         }
         else {
-          inputDiscount.value = '';
-          inputDiscount.setAttribute('disabled', true);
+          form.elements.discount_count.value = '';
+          discountCountDisabled(form);
         }
       }
       else if (e.target.type === 'number') {
-        const count = document.querySelector('input[name = "count"]').value;
-        const price = document.querySelector('input[name = "price"]').value;
-        const discont = document.querySelector('input[name = "discount_count"]').value;
-        const total = document.querySelector('output[name = "total"]');
-        total.innerHTML = `${count * price * (1 - discont / 100.00)}$`;
+        form.elements.total.innerHTML = `${form.elements.count.value * form.elements.price.value *
+          (1 - form.elements.discount_count.value / 100.00)}$`;
       };
     });
-  };
 
-  const dataControl = (table) => {
     table.addEventListener('click', e => {
       if (e.target.closest('.table__cell_btn-wrapper')) {
         e.target.closest('.good').remove();
@@ -197,10 +204,10 @@
         goods = deleteGood(id, goods);
         console.log(goods);
         newNumberRows();
+        addTotalPrice(cmsTotalPrice, goods);
       }
     });
   };
-
 
   const init = (goods) => {
     const table = document.querySelector('tbody');
@@ -211,7 +218,6 @@
 
 
     formControl(goods, overlay, panelAddGoods, form, table, cmsTotalPrice);
-    dataControl(table);
     renderGoods(table, goods, cmsTotalPrice);
   };
 
