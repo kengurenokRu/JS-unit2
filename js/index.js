@@ -78,10 +78,6 @@
   };
 
   const createRow = (obj) => {
-    console.log(obj);
-    console.log(obj.price);
-    console.log(obj.count);
-    console.log(obj.discount_count);
     const trLast = document.querySelectorAll('tr');
     let numb
     if (trLast[trLast.length - 1].firstElementChild.textContent === '№') numb = 1;
