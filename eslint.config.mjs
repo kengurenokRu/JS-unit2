@@ -28,7 +28,7 @@ export default defineConfig([{
         },
 
         ecmaVersion: "latest",
-        sourceType: "commonjs",
+        sourceType: "module",
 
         parserOptions: {
             parser: "babel-eslint",
