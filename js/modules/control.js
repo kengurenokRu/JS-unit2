@@ -1,8 +1,6 @@
-import * as dataControl from 'dataControl.js';
-import * as render from 'render.js';
-
-const { addTotalPrice, addGood, newNumberRows } = render;
-const { addGoodData, deleteGood } = dataControl;
+import {deleteGood, addGoodData} from './dataControl.js';
+import * as render from './render.js';
+import {addGood, addTotalPrice, newNumberRows} from './render.js';
 
 export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice) => {
   overlay.classList.remove('active');
@@ -45,7 +43,7 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     good.id = document.querySelector('.vendor-code__id').textContent;
     if (!('discount_count' in good))
       good.discount_count = 0;
-    addGoodData(good);
+    goods = addGoodData(good, goods);
     console.log(good);
     addGood(table, good);
     form.reset();

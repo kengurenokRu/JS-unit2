@@ -1,6 +1,6 @@
-/*import renderModul from '/module/render.js';
-import formControl from '/module/control.js';
-const { renderGoods } = renderModul;*/
+import renderModul from './modules/render.js';
+import {formControl} from './modules/control.js';
+const { renderGoods } = renderModul;
 
 {
   const goodsList = [
