@@ -1,6 +1,6 @@
-/*import renderModul from '/module/render.js';
+import renderModul from '/module/render.js';
 import formControl from '/module/control.js';
-const { renderGoods } = renderModul;*/
+const { renderGoods } = renderModul;
 
 {
   const goodsList = [
@@ -63,6 +63,7 @@ const { renderGoods } = renderModul;*/
   ]
 
   const init = (goods) => {
+    localStorage.clear();
     const table = document.querySelector('tbody');
     const overlay = document.querySelector('.overlay');
     const panelAddGoods = document.querySelector('.panel__add-goods');
