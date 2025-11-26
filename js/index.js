@@ -72,6 +72,7 @@ import { createImageContainer, createText } from './module/createElements.js';
     const modalFile = document.querySelector('.modal__file');
     const modalFieldset = document.querySelector('.modal__fieldset');
     const modalLabelFile = document.querySelector('.modal__label_file');
+
     const text = createText('modal__text_file');
     modalLabelFile.before(text);
     const [image, imageBlock] = createImageContainer(modalFieldset);

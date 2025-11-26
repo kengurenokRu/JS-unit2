@@ -50,7 +50,8 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
     form.reset();
     discountCountDisabled(form);
     text.style.display = 'none';
-    imageBlock.style.display = 'none';     
+    imageBlock.style.display = 'none';  
+    modalFile.value = '';   
     closeModal();
     addTotalPrice(cmsTotalPrice, goods);
   });
@@ -84,10 +85,11 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
 
 
   modalFile.addEventListener('change', () => {
-    if (modalFile.files.length > 0) {
+    if (modalFile.files.length > 0) {      
       if (modalFile.files[0].size > 1048576) {
         text.style.display = 'block';
         imageBlock.style.display = 'none';
+        modalFile.value = '';
       }
       else {
       image.src = URL.createObjectURL(modalFile.files[0]);
@@ -99,7 +101,8 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
   });
 
   image.addEventListener('click', () => {
-    imageBlock.style.display = 'none';    
+    imageBlock.style.display = 'none'; 
+    modalFile.value = '';       
   });
 };
 
