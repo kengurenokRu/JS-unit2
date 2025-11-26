@@ -1,10 +1,9 @@
-import * as dataControl from 'dataControl.js';
-import * as render from 'render.js';
+import { addGoodData, deleteGood } from './dataControl.js';
+import {addTotalPrice,  
+  addGood,
+  newNumberRows,} from './render.js';
 
-const { addTotalPrice, addGood, newNumberRows } = render;
-const { addGoodData, deleteGood } = dataControl;
-
-export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice) => {
+const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
   overlay.classList.remove('active');
 
   const generateId = () => {
@@ -45,11 +44,13 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     good.id = document.querySelector('.vendor-code__id').textContent;
     if (!('discount_count' in good))
       good.discount_count = 0;
-    addGoodData(good);
+    addGoodData(goods, good);
     console.log(good);
     addGood(table, good);
     form.reset();
     discountCountDisabled(form);
+    text.style.display = 'none';
+    imageBlock.style.display = 'none';     
     closeModal();
     addTotalPrice(cmsTotalPrice, goods);
   });
@@ -80,4 +81,26 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
       addTotalPrice(cmsTotalPrice, goods);
     }
   });
+
+
+  modalFile.addEventListener('change', () => {
+    if (modalFile.files.length > 0) {
+      if (modalFile.files[0].size > 1048576) {
+        text.style.display = 'block';
+        imageBlock.style.display = 'none';
+      }
+      else {
+      image.src = URL.createObjectURL(modalFile.files[0]);
+      image.alt = 'Изображение товара';
+      imageBlock.style.display = 'block';
+      text.style.display = 'none';
+      }
+    }
+  });
+
+  image.addEventListener('click', () => {
+    imageBlock.style.display = 'none';    
+  });
 };
+
+export default formControl;

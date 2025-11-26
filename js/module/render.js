@@ -1,12 +1,10 @@
-import * as dataControl from 'dataControl.js';
+import { sumGoods } from './dataControl.js';
 
-const { sumGoods } = dataControl;
-
-const addTotalPrice = (cmsTotalPrice, goods) => {
+export const addTotalPrice = (cmsTotalPrice, goods) => {
   cmsTotalPrice.textContent = `$ ${sumGoods(goods)}`;
 }
 
-const createRow = (obj) => {
+export const createRow = (obj) => {
   const trLast = document.querySelectorAll('tr');
   let numb
   if (trLast[trLast.length - 1].firstElementChild.textContent === '№') numb = 1;
@@ -31,28 +29,20 @@ const createRow = (obj) => {
   return tr;
 };
 
-const addGood = (table, good) => {
+export const addGood = (table, good) => {
   table.insertAdjacentHTML('beforeend', createRow(good));
 };
 
-const renderGoods = (table, goods, cmsTotalPrice) => {
+export const renderGoods = (table, goods, cmsTotalPrice) => {
   for (const el of goods) {
     addGood(table, el);
   }
   addTotalPrice(cmsTotalPrice, goods);
 };
 
-const newNumberRows = () => {
+export const newNumberRows = () => {
   const tableCellNumber = document.querySelectorAll('.table__cell_number');
   tableCellNumber.forEach((el, i) => {
     el.textContent = i + 1;
   })
 };
-
-export default {
-  addTotalPrice,
-  createRow,
-  addGood,
-  renderGoods,
-  newNumberRows,
-}
