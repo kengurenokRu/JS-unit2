@@ -1,9 +1,9 @@
 import { renderGoods } from './module/render.js';
 import formControl from './module/control.js';
 import { createImageContainer, createText } from './module/createElements.js';
-
+import {getData} from './module/dataControl.js';
 {
-  const goodsList = [
+  /*const goodsList = [
     {
       "id": 1,
       "name": "Смартфон Xiaomi 11T 8/128GB",
@@ -60,9 +60,11 @@ import { createImageContainer, createText } from './module/createElements.js';
         "big": "img/lan_proconnect43-3-25-b.jpg"
       }
     }
-  ]
+  ]*/
 
-  const init = (goods) => {
+  const init = async () => {
+    const goods = await getData();
+    console.log(goods);
     localStorage.clear();
     const table = document.querySelector('tbody');
     const overlay = document.querySelector('.overlay');
@@ -80,7 +82,7 @@ import { createImageContainer, createText } from './module/createElements.js';
     formControl(goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text);
     renderGoods(table, goods, cmsTotalPrice);
   };
-  init(goodsList);
+  init();
 };
 
 

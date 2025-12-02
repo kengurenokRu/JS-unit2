@@ -1,6 +1,13 @@
+export const getData = async () => {
+  const data = await fetch('http://localhost:3000/api/goods')
+    .then((data) => data.json())
+    .then((data) => data.goods);
+  return data;
+}
+
 export const sumGoods = (goods) => {
   return goods.reduce((sum, el) => {
-    return sum + (el.count * el.price) * (1 - el.discount_count / 100.00);
+    return sum + (el.count * el.price) * (1 - el.discount / 100.00);
   }, 0);
 }
 
