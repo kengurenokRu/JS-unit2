@@ -2,6 +2,7 @@ import { addGoodData, deleteGood } from './dataControl.js';
 import {addTotalPrice,  
   addGood,
   newNumberRows,} from './render.js';
+  import {deleteData} from './dataControl.js';
 
 const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
   overlay.classList.remove('active');
@@ -74,9 +75,10 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
 
   table.addEventListener('click', e => {
     if (e.target.closest('.table__cell_btn-wrapper')) {
-      e.target.closest('.good').remove();
+      //e.target.closest('.good').remove();
       const id = e.target.closest('.good').children[1].dataset.id;
-      goods = deleteGood(id, goods);
+      console.log(id);
+      goods = deleteData(id);
       console.log(goods);
       newNumberRows();
       addTotalPrice(cmsTotalPrice, goods);
