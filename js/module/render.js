@@ -8,7 +8,7 @@ export const createRow = (obj) => {
   const trLast = document.querySelectorAll('tr');
   let numb
   if (trLast[trLast.length - 1].firstElementChild.textContent === '№') numb = 1;
-  else numb = +trLast[trLast.length - 1].firstElementChild.textContent + 1;  
+  else numb = +trLast[trLast.length - 1].firstElementChild.textContent + 1;
   const tr = `
 <tr class = "good">
               <td class="table__cell table__cell_number">${numb}</td>
@@ -38,6 +38,10 @@ export const renderGoods = (table, goods, cmsTotalPrice) => {
     addGood(table, el);
   }
   addTotalPrice(cmsTotalPrice, goods);
+};
+
+export const clearTableGoods = (table) => {
+  table.innerHTML = '';
 };
 
 export const newNumberRows = () => {

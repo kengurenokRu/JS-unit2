@@ -1,5 +1,5 @@
-import {addTotalPrice, addGood, newNumberRows} from './render.js';
-import {addGoodData, deleteData, getData} from './dataControl.js';
+import { addTotalPrice, addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
+import { addGoodData, deleteData, getData } from './dataControl.js';
 
 const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
   overlay.classList.remove('active');
@@ -48,8 +48,8 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
     form.reset();
     discountCountDisabled(form);
     text.style.display = 'none';
-    imageBlock.style.display = 'none';  
-    modalFile.value = '';   
+    imageBlock.style.display = 'none';
+    modalFile.value = '';
     closeModal();
     addTotalPrice(cmsTotalPrice, goods);
   });
@@ -71,38 +71,42 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
   });
 
   table.addEventListener('click', async (e) => {
-    if (e.target.closest('.table__cell_btn-wrapper')) {      
+    if (e.target.classList.contains('table__btn_del')) {
       const id = e.target.closest('.good').children[1].dataset.id;
-      e.target.closest('.good').remove();      
-      deleteData(id);
-      newNumberRows();
+      await deleteData(id);
       const goods = await getData();
-      console.log(e.target.closest('.good'));
-      if (goods.length > e.target.closest('.good').length) console.log('!');
-      addTotalPrice(cmsTotalPrice, goods);
+      e.target.closest('.good').remove();
+      if (goods.length >= table.children.length) {
+        clearTableGoods(table);
+        renderGoods(table, goods, cmsTotalPrice);
+      }
+      else {
+        addTotalPrice(cmsTotalPrice, goods);
+        newNumberRows();
+      }
     }
   });
 
 
   modalFile.addEventListener('change', () => {
-    if (modalFile.files.length > 0) {      
+    if (modalFile.files.length > 0) {
       if (modalFile.files[0].size > 1048576) {
         text.style.display = 'block';
         imageBlock.style.display = 'none';
         modalFile.value = '';
       }
       else {
-      image.src = URL.createObjectURL(modalFile.files[0]);
-      image.alt = 'Изображение товара';
-      imageBlock.style.display = 'block';
-      text.style.display = 'none';
+        image.src = URL.createObjectURL(modalFile.files[0]);
+        image.alt = 'Изображение товара';
+        imageBlock.style.display = 'block';
+        text.style.display = 'none';
       }
     }
   });
 
   image.addEventListener('click', () => {
-    imageBlock.style.display = 'none'; 
-    modalFile.value = '';       
+    imageBlock.style.display = 'none';
+    modalFile.value = '';
   });
 };
 
