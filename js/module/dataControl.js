@@ -28,6 +28,22 @@ export const deleteData = async (id) => {
     });
 }
 
+export const addData = async (good) => {
+  console.log(good);
+  await fetch('http://localhost:3000/api/goods', {
+      method: 'POST',
+      body: JSON.stringify(good),
+      headers: { 'Content-Type': 'application/json' },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        Promise.reject(response);
+      }
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
+}
 
 /*
 export const fetchRequest = async (url, { method = 'GET', callback, body, headers }) => {

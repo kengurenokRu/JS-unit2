@@ -1,5 +1,5 @@
 import { addTotalPrice, addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
-import { addGoodData, deleteData, getData } from './dataControl.js';
+import { addGoodData, deleteData, getData, addData } from './dataControl.js';
 
 const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
   overlay.classList.remove('active');
@@ -35,15 +35,21 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
     form.elements.discount_count.setAttribute('disabled', true);
   }
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const good = Object.fromEntries(formData);
     good.id = document.querySelector('.vendor-code__id').textContent;
+    good.title = good.name;
+    delete good.name;
     if (!('discount_count' in good))
-      good.discount_count = 0;
-    addGoodData(goods, good);
-    console.log(good);
+      good.discount = 0;
+    else { good.discount = good.discount_count; delete good.discount_count; }
+    await addData(good);
+    good.image = await toBase64(good.image);
+
+    /*addGoodData(goods, good);
+    console.log(good);*/
     addGood(table, good);
     form.reset();
     discountCountDisabled(form);
@@ -69,6 +75,17 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
         (1 - form.elements.discount_count.value / 100.00)}$`;
     };
   });
+
+const toBase64 = file => new Promise((resolve, reject) =>{
+  const reader = new FileReader();
+  reader.addEventListener('loadend', () => {
+    resolve(reader.result);
+  });
+  reader.addEventListener('error', err => {
+    reject(err);
+  });
+  reader.readAsDataURL(file);
+});
 
   table.addEventListener('click', async (e) => {
     if (e.target.classList.contains('table__btn_del')) {
