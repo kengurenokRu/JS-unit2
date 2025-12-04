@@ -1,7 +1,7 @@
 import { addTotalPrice, addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
 import { addGoodData, deleteData, getData, addData } from './dataControl.js';
 
-const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
+export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
   overlay.classList.remove('active');
 
   const generateId = () => {
@@ -47,9 +47,6 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
     else { good.discount = good.discount_count; delete good.discount_count; }
     await addData(good);
     good.image = await toBase64(good.image);
-
-    /*addGoodData(goods, good);
-    console.log(good);*/
     addGood(table, good);
     form.reset();
     discountCountDisabled(form);
@@ -76,22 +73,22 @@ const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, 
     };
   });
 
-const toBase64 = file => new Promise((resolve, reject) =>{
-  const reader = new FileReader();
-  reader.addEventListener('loadend', () => {
-    resolve(reader.result);
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener('loadend', () => {
+      resolve(reader.result);
+    });
+    reader.addEventListener('error', err => {
+      reject(err);
+    });
+    reader.readAsDataURL(file);
   });
-  reader.addEventListener('error', err => {
-    reject(err);
-  });
-  reader.readAsDataURL(file);
-});
 
   table.addEventListener('click', async (e) => {
     if (e.target.classList.contains('table__btn_del')) {
       const id = e.target.closest('.good').children[1].dataset.id;
       await deleteData(id);
-      const goods = await getData();
+      goods = await getData();
       e.target.closest('.good').remove();
       if (goods.length >= table.children.length) {
         clearTableGoods(table);
@@ -127,4 +124,18 @@ const toBase64 = file => new Promise((resolve, reject) =>{
   });
 };
 
-export default formControl;
+export const panelSearchControl = (goods, panelSearch, table, cmsTotalPrice) => {
+  let timeout;
+
+  panelSearch.addEventListener('keyup', (e) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(async () => {
+      goods = await getData(panelSearch.search.value);
+      console.log(goods);
+      clearTableGoods(table);
+      renderGoods(table, goods, cmsTotalPrice);
+    }, 300);
+
+
+  });
+}

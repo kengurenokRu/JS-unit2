@@ -1,5 +1,5 @@
-export const getData = async () => {
-  const data = await fetch('http://localhost:3000/api/goods')
+export const getData = async (searchText = '') => {
+  const data = await fetch(`http://localhost:3000/api/goods?page=1&search=${searchText}`)
     .then((response) => {
       if (response.ok) { return response.json(); }
       else {
@@ -13,6 +13,9 @@ export const getData = async () => {
     });
   return data;
 }
+
+
+
 
 export const deleteData = async (id) => {
   await fetch(`http://localhost:3000/api/goods/${id}`, {
@@ -75,11 +78,12 @@ export const addGoodData = (goods, good) => {
   goods.push(good);
 };
 
+/*
 export const deleteGood = (id, goods) => {
   const tempGoods = goods;
   goods.forEach((good, index) => {
     if (good.id == id) goods.splice(index, 1)
   });
   return tempGoods;
-};
+};*/
 
