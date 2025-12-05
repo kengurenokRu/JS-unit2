@@ -10,11 +10,27 @@ const createImage = (classList) => {
   return image;
 }
 
-export const createText = (classList) => {
+export const createText = (classList, text) => {
   const p = document.createElement('p');
-  p.textContent = 'Изображение не должно превышать размер 1 Мб';
+  p.textContent = text;
   p.classList = classList;
   return p;
+}
+
+export const createOption = (value, textContent, classList) => {
+  const option = document.createElement('option');
+  option.classList = classList;
+  option.value = value;
+  option.textContent = textContent;
+  return option;
+}
+
+
+const createButton = (classList) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = classList;
+  return button;
 }
 
 export const createImageContainer = (modalFieldset) => {
@@ -25,21 +41,20 @@ export const createImageContainer = (modalFieldset) => {
   return [img, imageBlock];
 }
 
+const createSvg = (width, height, fill, innerHtml, viewBox = '') => {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', width);
+  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute('height', height);
+  svg.setAttribute('fill', fill);
+  if (viewBox != '')
+    svg.setAttribute('viewBox', viewBox);
+  svg.innerHTML = innerHtml;
+  return svg;
+}
 
 export const createPicturesBox = () => {
   const imageBlock = createContainer('image-popUp-container');
-  /*imageBlock.style.cssText = `
-  display: none;
-  width: 500px;
-  height: 500px;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  margin-left: -250px;
-  margin-top: -250px;
-  box-shadow: 0px 0px 50px #6E6893;
-  text-align: center;
-  background-color: #F4F2FF;`;*/
   const img = createImage('image-show');
   img.style.cssText = `
    width: auto;
@@ -48,4 +63,32 @@ export const createPicturesBox = () => {
   imageBlock.append(img);
   document.body.append(imageBlock);
   return [img, imageBlock];
+}
+
+export const createErrorBlock = () => {
+  const overlay = createContainer('overlay overlayError');
+  const overlayModal = createContainer('overlay__modal modal modal__error');
+  overlayModal.style.width = '350px';
+  overlayModal.style.height = '350px';
+  overlayModal.style.display = 'flex';
+  overlayModal.style.flexDirection = 'column';
+  overlayModal.style.justifyContent = 'center';
+  overlayModal.style.alignItems = 'center';
+  overlayModal.style.letterSpacing = '10%';
+  overlayModal.style.font = 'Inter';
+  overlayModal.style.padding = '10px';
+  overlay.append(overlayModal);
+  const buttonClose = createButton('modal__close modal__error-close');
+  const svgClose = createSvg(24, 24, 'none', '<path d="m2 2 20 20M2 22 22 2" stroke="currentColor" stroke-width="3" stroke-linecap="round" />');
+  buttonClose.append(svgClose);
+  overlayModal.append(buttonClose);
+  const svgX = createSvg(93, 93, 'none', '<path d="M1.5 1.5L91.5 91.5" stroke="#D80101" stroke-width="3" stroke-linecap="round"/> <path d="M1.5 91.5L91.5 1.5" stroke="#D80101" stroke-width="3" stroke-linecap="round"/>', '0 0 93 93');
+  svgX.style.marginBottom = '33px';
+  overlayModal.append(svgX);
+  const text = createText('', 'Что-то пошло не так');
+  text.style.fontSize = '18px';
+  text.style.fontWeight = '700';
+  text.style.textTransform = 'uppercase';
+  overlayModal.append(text);
+  document.body.append(overlay);
 }

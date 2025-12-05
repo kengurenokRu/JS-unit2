@@ -1,6 +1,6 @@
 import { renderGoods } from './module/render.js';
 import {formControl, panelSearchControl, imagePopUpControl} from './module/control.js';
-import { createImageContainer, createText, createPicturesBox } from './module/createElements.js';
+import { createImageContainer, createText, createPicturesBox, createErrorBlock } from './module/createElements.js';
 import {getData} from './module/dataControl.js';
 {
   const init = async () => {
@@ -14,7 +14,7 @@ import {getData} from './module/dataControl.js';
     const modalFieldset = document.querySelector('.modal__fieldset');
     const modalLabelFile = document.querySelector('.modal__label_file');
     const panelSearch = document.querySelector('.panel__search');
-    const text = createText('modal__text_file');
+    const text = createText('modal__text_file', 'Изображение не должно превышать размер 1 Мб');
     modalLabelFile.before(text);
     const [image, imageBlock] = createImageContainer(modalFieldset);
     const [imagePopUp, imageBlockPopUp] = createPicturesBox();
@@ -22,6 +22,7 @@ import {getData} from './module/dataControl.js';
     imagePopUpControl(imageBlockPopUp)
     panelSearchControl(goods, panelSearch, table, cmsTotalPrice);
     renderGoods(table, goods, cmsTotalPrice);
+    createErrorBlock();
   };
   init();
 };
