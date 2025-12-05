@@ -1,5 +1,5 @@
-import { addTotalPrice, addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
-import { addGoodData, deleteData, getData, addData } from './dataControl.js';
+import { addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
+import { addGoodData, deleteData, getData, addData, getTotal } from './dataControl.js';
 
 export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
   overlay.classList.remove('active');
@@ -54,7 +54,7 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     imageBlock.style.display = 'none';
     modalFile.value = '';
     closeModal();
-    addTotalPrice(cmsTotalPrice, goods);
+    cmsTotalPrice.textContent = await getTotal();
   });
 
   form.addEventListener('change', e => {
@@ -95,7 +95,7 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
         renderGoods(table, goods, cmsTotalPrice);
       }
       else {
-        addTotalPrice(cmsTotalPrice, goods);
+        cmsTotalPrice.textContent = await getTotal();        
         newNumberRows();
       }
     }

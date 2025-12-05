@@ -1,8 +1,4 @@
-import { sumGoods } from './dataControl.js';
-
-export const addTotalPrice = (cmsTotalPrice, goods) => {
-  cmsTotalPrice.textContent = `$ ${sumGoods(goods)}`;
-}
+import { getTotal } from './dataControl.js';
 
 export const createRow = (obj) => {
   const trLast = document.querySelectorAll('tr');
@@ -33,11 +29,13 @@ export const addGood = (table, good) => {
   table.insertAdjacentHTML('beforeend', createRow(good));
 };
 
-export const renderGoods = (table, goods, cmsTotalPrice) => {
+export const renderGoods = async (table, goods, cmsTotalPrice) => {
   for (const el of goods) {
     addGood(table, el);
   }
-  addTotalPrice(cmsTotalPrice, goods);
+  const total = await getTotal();
+  console.log(total)
+  cmsTotalPrice.textContent = total;
 };
 
 export const clearTableGoods = (table) => {
