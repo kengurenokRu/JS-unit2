@@ -29,6 +29,21 @@ export const getDataId = async (id) => {
   return data;
 }
 
+export const editData = async (good) => {
+  await fetch(`http://localhost:3000/api/goods/${good.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(good),
+      headers: { 'Content-Type': 'application/json' },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        Promise.reject(response);
+      }
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
+}
 
 export const deleteData = async (id) => {
   await fetch(`http://localhost:3000/api/goods/${id}`, {
@@ -64,7 +79,7 @@ export const addData = async (good) => {
 export const getTotal = async () => {
   const data = await fetch('http://localhost:3000/api/total')
     .then((response) => {
-      if (response.ok) { 
+      if (response.ok) {
         return response.json(); }
       else {
         Promise.reject(response);

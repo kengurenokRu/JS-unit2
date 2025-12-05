@@ -1,5 +1,5 @@
-import { getTotalText, addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
-import { getDataId, deleteData, getData, addData, getTotal } from './dataControl.js';
+import { textForm, getTotalText, addGood, newNumberRows, clearTableGoods, renderGoods, fillFields, clearImage } from './render.js';
+import { getDataId, deleteData, getData, addData, editData } from './dataControl.js';
 
 export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp) => {
   overlay.classList.remove('active');
@@ -17,9 +17,10 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
   };
 
   panelAddGoods.addEventListener('click', () => {
-    openModal();
     const codeId = document.querySelector('.vendor-code__id');
     codeId.textContent = generateId();
+    textForm('Добавить товар', 'Добавить товар');
+    openModal();
   });
 
   overlay.addEventListener('click', e => {
@@ -27,6 +28,7 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
       closeModal();
       const form = document.querySelector('.modal__form');
       form.reset();
+      clearImage(imageBlock, modalFile, text);
       discountCountDisabled(form);
     }
   });
@@ -45,14 +47,22 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     if (!('discount_count' in good))
       good.discount = 0;
     else { good.discount = good.discount_count; delete good.discount_count; }
-    await addData(good);
-    good.image = await toBase64(good.image);
-    addGood(table, good);
+    if (good.image.name !== '')
+      good.image = await toBase64(good.image);
+    else delete good.image;
+    if (await getDataId(good.id)) {
+      await editData(good);
+      clearTableGoods(table);
+      goods = await getData();
+      renderGoods(table, goods, cmsTotalPrice);
+    }
+    else {
+      await addData(good);
+      addGood(table, good);
+    }
     form.reset();
     discountCountDisabled(form);
-    text.style.display = 'none';
-    imageBlock.style.display = 'none';
-    modalFile.value = '';
+    clearImage(imageBlock, modalFile, text);
     closeModal();
     getTotalText(cmsTotalPrice);
   });
@@ -87,7 +97,6 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
   table.addEventListener('click', async (e) => {
     const id = e.target.closest('.good').children[1].dataset.id;
     if (e.target.classList.contains('table__btn_del')) {
-
       await deleteData(id);
       goods = await getData();
       e.target.closest('.good').remove();
@@ -104,6 +113,13 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
       console.log(good.image);
       imagePopUp.src = `http://localhost:3000/${good.image}`;
       imageBlockPopUp.style.display = 'block';
+    }
+    else if (e.target.classList.contains('table__btn_edit')) {
+      textForm('Редактировать товар', 'Сохранить товар');
+      await fillFields(id, form, image, imageBlock, modalFile, text);
+      imageBlock.style.display = 'block';
+      openModal();
+
     }
   });
 
@@ -125,8 +141,7 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
   });
 
   image.addEventListener('click', () => {
-    imageBlock.style.display = 'none';
-    modalFile.value = '';
+    clearImage(imageBlock, modalFile, text);
   });
 };
 
@@ -135,7 +150,6 @@ export const imagePopUpControl = (imageBlockPopUp) => {
     imageBlockPopUp.style.display = 'none';
   });
 }
-
 
 export const panelSearchControl = (goods, panelSearch, table, cmsTotalPrice) => {
   let timeout;
@@ -148,7 +162,5 @@ export const panelSearchControl = (goods, panelSearch, table, cmsTotalPrice) => 
       clearTableGoods(table);
       renderGoods(table, goods, cmsTotalPrice);
     }, 300);
-
-
   });
 }

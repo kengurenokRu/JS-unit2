@@ -1,9 +1,9 @@
-import { getTotal } from './dataControl.js';
-
-export const getTotalText = async (cmsTotalPrice) =>{
+import { getTotal, getDataId } from './dataControl.js';
+export const getTotalText = async (cmsTotalPrice) => {
   const total = await getTotal();
   cmsTotalPrice.textContent = `${total}$`;
 }
+
 export const createRow = (obj) => {
   const trLast = document.querySelectorAll('tr');
   let numb
@@ -51,3 +51,39 @@ export const newNumberRows = () => {
     el.textContent = i + 1;
   })
 };
+
+export const clearImage = (imageBlock, modalFile, text) => {
+  imageBlock.style.display = 'none';
+    modalFile.value = '';
+    text.style.display = 'none';
+}
+
+export const textForm = (caption, button) => {
+const modalTitle = document.querySelector('.modal__title');
+modalTitle.textContent = caption;
+const modalSubmit = document.querySelector('.modal__submit');
+modalSubmit.textContent = button;
+}
+
+export const fillFields = async (id, form, image, imageBlock, modalFile, text) => {
+  const codeId = document.querySelector('.vendor-code__id');
+  codeId.textContent = id;
+  const good = await getDataId(id);
+  console.log(good);
+  form.elements.name.value = good.title;
+  form.elements.category.value = good.category;
+  form.elements.description.value = good.description;
+  form.elements.units.value = good.units;
+  if (good.discount != 0) {
+    form.elements.discount.checked = true;
+    form.elements.discount_count.value = good.discount;
+  }
+  form.elements.count.value = good.count;
+  form.elements.price.value = good.price;
+  image.src = `http://localhost:3000/${good.image}`;
+  image.alt = 'Изображение товара';
+  imageBlock.style.display = 'block';
+  form.elements.total.innerHTML = `${form.elements.count.value * form.elements.price.value *
+    (1 - form.elements.discount_count.value / 100.00)}$`;
+    clearImage(imageBlock, modalFile, text);
+}
