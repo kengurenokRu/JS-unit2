@@ -1,6 +1,6 @@
 import { renderGoods } from './module/render.js';
 import {formControl, panelSearchControl} from './module/control.js';
-import { createImageContainer, createText } from './module/createElements.js';
+import { createImageContainer, createText, createPicturesBox } from './module/createElements.js';
 import {getData} from './module/dataControl.js';
 {
   const init = async () => {
@@ -17,8 +17,8 @@ import {getData} from './module/dataControl.js';
     const text = createText('modal__text_file');
     modalLabelFile.before(text);
     const [image, imageBlock] = createImageContainer(modalFieldset);
-
-    formControl(goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text);
+    const [imagePopUp, imageBlockPopUp] = createPicturesBox();
+    formControl(goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp);
     panelSearchControl(goods, panelSearch, table, cmsTotalPrice);
     renderGoods(table, goods, cmsTotalPrice);
   };

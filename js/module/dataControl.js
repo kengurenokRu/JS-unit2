@@ -14,6 +14,22 @@ export const getData = async (searchText = '') => {
   return data;
 }
 
+export const getDataId = async (id) => {
+  const data = await fetch(`http://localhost:3000/api/goods/${id}`)
+    .then((response) => {
+      if (response.ok) { return response.json(); }
+      else {
+        Promise.reject(response);
+      }
+    })
+    .catch((error) => {
+      console.error(error.message);
+      return [];
+    });
+  return data;
+}
+
+
 export const deleteData = async (id) => {
   await fetch(`http://localhost:3000/api/goods/${id}`, {
     method: 'DELETE'

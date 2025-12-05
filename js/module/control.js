@@ -1,7 +1,7 @@
 import { addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
-import { deleteData, getData, addData, getTotal } from './dataControl.js';
+import { getDataId, deleteData, getData, addData, getTotal } from './dataControl.js';
 
-export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
+export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp) => {
   overlay.classList.remove('active');
 
   const generateId = () => {
@@ -85,8 +85,9 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
   });
 
   table.addEventListener('click', async (e) => {
+    const id = e.target.closest('.good').children[1].dataset.id;
     if (e.target.classList.contains('table__btn_del')) {
-      const id = e.target.closest('.good').children[1].dataset.id;
+
       await deleteData(id);
       goods = await getData();
       e.target.closest('.good').remove();
@@ -95,9 +96,14 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
         renderGoods(table, goods, cmsTotalPrice);
       }
       else {
-        cmsTotalPrice.textContent = await getTotal();        
+        cmsTotalPrice.textContent = await getTotal();
         newNumberRows();
       }
+    } else if (e.target.classList.contains('table__btn_pic')) {
+      const good = await getDataId(id);
+      console.log(good.image);
+      imagePopUp.src = good.image; 
+      imageBlockPopUp.style.display = 'block';
     }
   });
 
