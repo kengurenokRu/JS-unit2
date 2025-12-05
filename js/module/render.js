@@ -1,5 +1,9 @@
 import { getTotal } from './dataControl.js';
 
+export const getTotalText = async (cmsTotalPrice) =>{
+  const total = await getTotal();
+  cmsTotalPrice.textContent = `${total}$`;
+}
 export const createRow = (obj) => {
   const trLast = document.querySelectorAll('tr');
   let numb
@@ -33,9 +37,8 @@ export const renderGoods = async (table, goods, cmsTotalPrice) => {
   for (const el of goods) {
     addGood(table, el);
   }
-  const total = await getTotal();
-  console.log(total)
-  cmsTotalPrice.textContent = total;
+
+  getTotalText(cmsTotalPrice);
 };
 
 export const clearTableGoods = (table) => {

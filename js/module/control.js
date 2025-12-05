@@ -1,4 +1,4 @@
-import { addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
+import { getTotalText, addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
 import { getDataId, deleteData, getData, addData, getTotal } from './dataControl.js';
 
 export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp) => {
@@ -54,7 +54,7 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     imageBlock.style.display = 'none';
     modalFile.value = '';
     closeModal();
-    cmsTotalPrice.textContent = await getTotal();
+    getTotalText(cmsTotalPrice);
   });
 
   form.addEventListener('change', e => {
@@ -96,13 +96,13 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
         renderGoods(table, goods, cmsTotalPrice);
       }
       else {
-        cmsTotalPrice.textContent = await getTotal();
+        getTotalText(cmsTotalPrice);
         newNumberRows();
       }
     } else if (e.target.classList.contains('table__btn_pic')) {
       const good = await getDataId(id);
       console.log(good.image);
-      imagePopUp.src = good.image; 
+      imagePopUp.src = `http://localhost:3000/${good.image}`;
       imageBlockPopUp.style.display = 'block';
     }
   });
@@ -129,6 +129,13 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     modalFile.value = '';
   });
 };
+
+export const imagePopUpControl = (imageBlockPopUp) => {
+  imageBlockPopUp.addEventListener('click', () => {
+    imageBlockPopUp.style.display = 'none';
+  });
+}
+
 
 export const panelSearchControl = (goods, panelSearch, table, cmsTotalPrice) => {
   let timeout;

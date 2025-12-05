@@ -1,5 +1,5 @@
 import { renderGoods } from './module/render.js';
-import {formControl, panelSearchControl} from './module/control.js';
+import {formControl, panelSearchControl, imagePopUpControl} from './module/control.js';
 import { createImageContainer, createText, createPicturesBox } from './module/createElements.js';
 import {getData} from './module/dataControl.js';
 {
@@ -19,6 +19,7 @@ import {getData} from './module/dataControl.js';
     const [image, imageBlock] = createImageContainer(modalFieldset);
     const [imagePopUp, imageBlockPopUp] = createPicturesBox();
     formControl(goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp);
+    imagePopUpControl(imageBlockPopUp)
     panelSearchControl(goods, panelSearch, table, cmsTotalPrice);
     renderGoods(table, goods, cmsTotalPrice);
   };
