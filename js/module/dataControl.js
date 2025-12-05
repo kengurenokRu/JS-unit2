@@ -84,7 +84,22 @@ export const getTotal = async () => {
         Promise.reject(response);
       }
     })
-    .then((data) => data)
+    .catch((error) => {
+      console.error(error.message);
+      return 0;
+    });
+  return data;
+}
+
+export const getCategory = async () => {
+  const data = await fetch('http://localhost:3000/api/categories')
+    .then((response) => {
+      if (response.ok) {
+        return response.json(); }
+      else {
+        Promise.reject(response);
+      }
+    })
     .catch((error) => {
       console.error(error.message);
       return 0;

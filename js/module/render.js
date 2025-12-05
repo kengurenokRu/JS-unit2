@@ -1,4 +1,6 @@
-import { getTotal, getDataId } from './dataControl.js';
+import { getTotal, getDataId, getCategory } from './dataControl.js';
+import { createList } from './createElements.js';
+
 export const getTotalText = async (cmsTotalPrice) => {
   const total = await getTotal();
   cmsTotalPrice.textContent = `${total}$`;
@@ -69,6 +71,7 @@ export const fillFields = async (id, form, image, imageBlock, modalFile, text) =
   const codeId = document.querySelector('.vendor-code__id');
   codeId.textContent = id;
   const good = await getDataId(id);
+  console.log(good);
   form.elements.name.value = good.title;
   form.elements.category.value = good.category;
   form.elements.description.value = good.description;
@@ -86,3 +89,8 @@ export const fillFields = async (id, form, image, imageBlock, modalFile, text) =
     (1 - form.elements.discount_count.value / 100.00)}$`;
     clearImage(imageBlock, modalFile, text);
 }
+
+export const fillCategoryList = async (categoryList) => {
+  const category = await getCategory();
+  createList(categoryList, category);
+};

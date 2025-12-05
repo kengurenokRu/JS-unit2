@@ -17,14 +17,12 @@ export const createText = (classList, text) => {
   return p;
 }
 
-export const createOption = (value, textContent, classList) => {
+export const createOption = (value, textContent) => {
   const option = document.createElement('option');
-  option.classList = classList;
   option.value = value;
   option.textContent = textContent;
   return option;
 }
-
 
 const createButton = (classList) => {
   const button = document.createElement('button');
@@ -92,3 +90,10 @@ export const createErrorBlock = () => {
   overlayModal.append(text);
   document.body.append(overlay);
 }
+
+export const createList = (categoryList, category) =>{
+  for (const el of category) {
+    const op = createOption (el, el);
+    categoryList.append(op);
+  }
+};
