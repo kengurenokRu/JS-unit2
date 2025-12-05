@@ -1,5 +1,5 @@
 import { addGood, newNumberRows, clearTableGoods, renderGoods } from './render.js';
-import { addGoodData, deleteData, getData, addData, getTotal } from './dataControl.js';
+import { deleteData, getData, addData, getTotal } from './dataControl.js';
 
 export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text) => {
   overlay.classList.remove('active');
