@@ -110,7 +110,6 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
       }
     } else if (e.target.classList.contains('table__btn_pic')) {
       const good = await getDataId(id);
-      console.log(good.image);
       imagePopUp.src = `http://localhost:3000/${good.image}`;
       imageBlockPopUp.style.display = 'block';
     }
@@ -158,7 +157,6 @@ export const panelSearchControl = (goods, panelSearch, table, cmsTotalPrice) => 
     clearTimeout(timeout);
     timeout = setTimeout(async () => {
       goods = await getData(panelSearch.search.value);
-      console.log(goods);
       clearTableGoods(table);
       renderGoods(table, goods, cmsTotalPrice);
     }, 300);

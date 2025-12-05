@@ -60,7 +60,6 @@ export const deleteData = async (id) => {
 }
 
 export const addData = async (good) => {
-  console.log(good);
   await fetch('http://localhost:3000/api/goods', {
       method: 'POST',
       body: JSON.stringify(good),

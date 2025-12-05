@@ -19,12 +19,9 @@ export const createText = (classList) => {
 
 export const createImageContainer = (modalFieldset) => {
   const imageBlock = createContainer('image-container');
-
-  // const text = createText('modal__label_file');
   const img = createImage('modal__label_file-add');
-  imageBlock.append(/*text,*/ img);
+  imageBlock.append(img);
   modalFieldset.append(imageBlock);
-
   return [img, imageBlock];
 }
 
@@ -50,12 +47,5 @@ export const createPicturesBox = () => {
    object-fit: contain;`;
   imageBlock.append(img);
   document.body.append(imageBlock);
-  return [img, imageBlock];
-
-  /*const imageBlock = createContainer('image-container');
-  const img = createImage('modal__label_file-add');
-  imageBlock.append(img);
-  document.body.append(imageBlock);*/
-
   return [img, imageBlock];
 }

@@ -69,7 +69,6 @@ export const fillFields = async (id, form, image, imageBlock, modalFile, text) =
   const codeId = document.querySelector('.vendor-code__id');
   codeId.textContent = id;
   const good = await getDataId(id);
-  console.log(good);
   form.elements.name.value = good.title;
   form.elements.category.value = good.category;
   form.elements.description.value = good.description;
