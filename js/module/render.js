@@ -1,4 +1,5 @@
-import { getTotal, getDataId, getCategory } from './dataControl.js';
+import { getTotal, getDataId, getCategory,getTotalCount,
+  getPageCount } from './dataControl.js';
 import { createList } from './createElements.js';
 
 export const getTotalText = async (cmsTotalPrice) => {
@@ -6,14 +7,10 @@ export const getTotalText = async (cmsTotalPrice) => {
   cmsTotalPrice.textContent = `${total}$`;
 }
 
-export const createRow = (obj) => {
-  const trLast = document.querySelectorAll('tr');
-  let numb
-  if (trLast[trLast.length - 1].firstElementChild.textContent === '№') numb = 1;
-  else numb = +trLast[trLast.length - 1].firstElementChild.textContent + 1;
+export const createRow = (obj, numberRow) => {
   const tr = `
 <tr class = "good">
-              <td class="table__cell table__cell_number">${numb}</td>
+              <td class="table__cell table__cell_number">${numberRow}</td>
               <td class="table__cell table__cell_left table__cell_name" data-id="${obj.id}">
                 <span class="table__cell-id">id: ${obj.id}</span>${obj.title}</td>
               <td class="table__cell table__cell_left">${obj.category}</td>
@@ -31,16 +28,18 @@ export const createRow = (obj) => {
   return tr;
 };
 
-export const addGood = (table, good) => {
-  table.insertAdjacentHTML('beforeend', createRow(good));
+export const addGood = (table, good, numberRow) => {
+  table.insertAdjacentHTML('beforeend', createRow(good, numberRow));
 };
 
-export const renderGoods = async (table, goods, cmsTotalPrice) => {
+export const renderGoods = async (table, goods, cmsTotalPrice, page = 1) => {
+  let numberRow = page*10-10;
   for (const el of goods) {
-    addGood(table, el);
+    numberRow++;
+    addGood(table, el, numberRow);
   }
-
   getTotalText(cmsTotalPrice);
+  await renderCountSubPanel(page, goods);
 };
 
 export const clearTableGoods = (table) => {
@@ -94,3 +93,20 @@ export const fillCategoryList = async (categoryList) => {
   const category = await getCategory();
   createList(categoryList, category);
 };
+
+export const openModalError = () => {
+  const overlayError = document.querySelector('.overlay__error');
+  overlayError.classList.add('active');
+};
+
+export const addTextError = (text) => {
+  const textError = document.querySelector('text-error');
+  textError.textContent = text;
+}
+
+export const renderCountSubPanel = async (page = 1, goods) => {
+  const goodsCount = await getTotalCount();
+    const pageCount = await getPageCount();
+  const subPanelPages = document.querySelector('.sub-panel__pages');
+    subPanelPages.textContent = `${page*10-9}-${page*10 - 10 + goods.length} из ${goodsCount}`;
+}

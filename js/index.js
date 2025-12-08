@@ -1,10 +1,10 @@
-import { renderGoods, fillCategoryList } from './module/render.js';
-import {formControl, panelSearchControl, imagePopUpControl} from './module/control.js';
-import { createImageContainer, createText, createPicturesBox, createErrorBlock } from './module/createElements.js';
+import { renderGoods, fillCategoryList} from './module/render.js';
+import {formControl, panelSearchControl, imagePopUpControl, modalErrorControl, subPanelControl} from './module/control.js';
+import { createImageContainer, createText, createPicturesBox, createErrorBlock, cteateTextForm } from './module/createElements.js';
 import {getData} from './module/dataControl.js';
 {
   const init = async () => {
-    let goods = await getData();
+    const goods = await getData();
     const table = document.querySelector('tbody');
     const overlay = document.querySelector('.overlay');
     const panelAddGoods = document.querySelector('.panel__add-goods');
@@ -15,18 +15,25 @@ import {getData} from './module/dataControl.js';
     const modalLabelFile = document.querySelector('.modal__label_file');
     const panelSearch = document.querySelector('.panel__search');
     const categoryList = document.querySelector('#category-list');
+    const subPanel = document.querySelector('.sub-panel');
+
 
     const text = createText('modal__text_file', 'Изображение не должно превышать размер 1 Мб');
     modalLabelFile.before(text);
     const [image, imageBlock] = createImageContainer(modalFieldset);
     const [imagePopUp, imageBlockPopUp] = createPicturesBox();
-    formControl(goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp);
+    const textError = cteateTextForm(form);
+    formControl(overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp, textError);
     imagePopUpControl(imageBlockPopUp)
-    panelSearchControl(goods, panelSearch, table, cmsTotalPrice);
-    renderGoods(table, goods, cmsTotalPrice);
-    createErrorBlock();
-    fillCategoryList(categoryList);
+    panelSearchControl(panelSearch, table, cmsTotalPrice);
 
+    console.log(goods);
+    renderGoods(table, goods, cmsTotalPrice);
+
+    const overlayError = createErrorBlock();
+    fillCategoryList(categoryList);
+    modalErrorControl(overlayError);
+    subPanelControl(subPanel, table, cmsTotalPrice)
   };
   init();
 };

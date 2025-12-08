@@ -89,11 +89,18 @@ export const createErrorBlock = () => {
   text.style.textTransform = 'uppercase';
   overlayModal.append(text);
   document.body.append(overlay);
+  return overlay;
 }
 
-export const createList = (categoryList, category) =>{
+export const createList = (categoryList, category) => {
   for (const el of category) {
-    const op = createOption (el, el);
+    const op = createOption(el, el);
     categoryList.append(op);
   }
 };
+
+export const cteateTextForm = (form) => {
+  const text = createText('modal__text_file text-error', '');
+  form.prepend(text);
+  return text;
+}

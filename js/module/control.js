@@ -1,7 +1,29 @@
-import { textForm, getTotalText, addGood, newNumberRows, clearTableGoods, renderGoods, fillFields, clearImage } from './render.js';
-import { getDataId, deleteData, getData, addData, editData } from './dataControl.js';
+import {
+  textForm,
+  getTotalText,
+  addGood,
+  newNumberRows,
+  clearTableGoods,
+  renderGoods,
+  fillFields,
+  clearImage,
+  openModalError,
+  addTextError,
+  renderCountSubPanel
+} from './render.js';
+import {
+  getDataId,
+  deleteData,
+  getData,
+  addData,
+  editData,
+  getTotalCount,
+  getPageCount
+} from './dataControl.js';
 
-export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp) => {
+let page = 1;
+
+export const formControl = (overlay, panelAddGoods, form, table, cmsTotalPrice, modalFile, image, imageBlock, text, imagePopUp, imageBlockPopUp, textError) => {
   overlay.classList.remove('active');
 
   const generateId = () => {
@@ -10,6 +32,10 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
 
   const closeModal = () => {
     overlay.classList.remove('active');
+    textError.textContent = '';
+    clearImage(imageBlock, modalFile, text);
+    discountCountDisabled(form);
+    form.reset();
   };
 
   const openModal = () => {
@@ -26,10 +52,6 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
   overlay.addEventListener('click', e => {
     if ((e.target === overlay) || (e.target.closest('.modal__close'))) {
       closeModal();
-      const form = document.querySelector('.modal__form');
-      form.reset();
-      clearImage(imageBlock, modalFile, text);
-      discountCountDisabled(form);
     }
   });
 
@@ -46,23 +68,26 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     delete good.name;
     if (!('discount_count' in good))
       good.discount = 0;
-    else { good.discount = good.discount_count; delete good.discount_count; }
+    else {
+      good.discount = good.discount_count;
+      delete good.discount_count;
+    }
     if (good.image.name !== '')
       good.image = await toBase64(good.image);
     else delete good.image;
-    if (await getDataId(good.id)) {
-      await editData(good);
-      clearTableGoods(table);
-      goods = await getData();
-      renderGoods(table, goods, cmsTotalPrice);
+    const res = await getDataId(good.id);
+    console.log(res.length);
+    if (res.length !== 0) {
+      const status = await editData(good, openModalError, addTextError);
+      if (status === 'error') return;
     }
     else {
-      await addData(good);
-      addGood(table, good);
+      const status = await addData(good, openModalError, addTextError);
+      if (status === 'error') return;
     }
-    form.reset();
-    discountCountDisabled(form);
-    clearImage(imageBlock, modalFile, text);
+    clearTableGoods(table);
+    const goods = await getData(page);
+    renderGoods(table, goods, cmsTotalPrice, page);
     closeModal();
     getTotalText(cmsTotalPrice);
   });
@@ -98,11 +123,11 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
     const id = e.target.closest('.good').children[1].dataset.id;
     if (e.target.classList.contains('table__btn_del')) {
       await deleteData(id);
-      goods = await getData();
+      const goods = await getData(page);
       e.target.closest('.good').remove();
       if (goods.length >= table.children.length) {
         clearTableGoods(table);
-        renderGoods(table, goods, cmsTotalPrice);
+        renderGoods(table, goods, cmsTotalPrice, page);
       }
       else {
         getTotalText(cmsTotalPrice);
@@ -118,10 +143,8 @@ export const formControl = (goods, overlay, panelAddGoods, form, table, cmsTotal
       await fillFields(id, form, image, imageBlock, modalFile, text);
       imageBlock.style.display = 'block';
       openModal();
-
     }
   });
-
 
   modalFile.addEventListener('change', () => {
     if (modalFile.files.length > 0) {
@@ -150,15 +173,47 @@ export const imagePopUpControl = (imageBlockPopUp) => {
   });
 }
 
-export const panelSearchControl = (goods, panelSearch, table, cmsTotalPrice) => {
+export const panelSearchControl = (panelSearch, table, cmsTotalPrice) => {
   let timeout;
 
   panelSearch.addEventListener('keyup', (e) => {
     clearTimeout(timeout);
     timeout = setTimeout(async () => {
-      goods = await getData(panelSearch.search.value);
+      const goods = await getData(page, panelSearch.search.value);
       clearTableGoods(table);
-      renderGoods(table, goods, cmsTotalPrice);
+      renderGoods(table, goods, cmsTotalPrice, page);
     }, 300);
+  });
+}
+
+export const modalErrorControl = (overlayError) => {
+  const closeModal = () => {
+    overlayError.classList.remove('active');
+  };
+
+  overlayError.addEventListener('click', e => {
+    if ((e.target === overlayError) || (e.target.closest('.modal__close'))) {
+      closeModal();
+    }
+  });
+}
+
+export const subPanelControl = (subPanel, table, cmsTotalPrice) => {
+  subPanel.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('sub-panel__left')) {
+      if (page === 1) return;
+      page--;
+    }
+    else
+      if (e.target.classList.contains('sub-panel__right')) {
+        const pageCount = await getPageCount();
+        if (page === pageCount) return;
+        page++;
+      }
+    clearTableGoods(table);
+    const goods = await getData(page, '');
+    console.log(goods);
+    renderGoods(table, goods, cmsTotalPrice, page);
+    getTotalText(cmsTotalPrice);
   });
 }

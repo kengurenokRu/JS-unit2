@@ -1,9 +1,42 @@
-export const getData = async (searchText = '') => {
-  const data = await fetch(`http://localhost:3000/api/goods?page=1&search=${searchText}`)
+export const getPageCount = async () => {
+  const data = await fetch('http://localhost:3000/api/goods')
     .then((response) => {
       if (response.ok) { return response.json(); }
       else {
-        Promise.reject(response);
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+    })
+    .then((data) => data.pages)
+    .catch((error) => {
+      console.error(error.message);
+      return 0;
+    });
+  return data;
+}
+
+export const getTotalCount = async () => {
+  const data = await fetch('http://localhost:3000/api/goods')
+    .then((response) => {
+      if (response.ok) { return response.json(); }
+      else {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+    })
+    .then((data) => data.totalCount)
+    .catch((error) => {
+      console.error(error.message);
+      return 0;
+    });
+  return data;
+}
+
+
+export const getData = async (page = 1, searchText = '',) => {
+  const data = await fetch(`http://localhost:3000/api/goods?page=${page}&search=${searchText}`)
+    .then((response) => {
+      if (response.ok) { return response.json(); }
+      else {
+        throw new Error(`${response.status}: ${response.statusText}`);
       }
     })
     .then((data) => data.goods)
@@ -19,7 +52,7 @@ export const getDataId = async (id) => {
     .then((response) => {
       if (response.ok) { return response.json(); }
       else {
-        Promise.reject(response);
+        throw new Error(`${response.status}: ${response.statusText}`);
       }
     })
     .catch((error) => {
@@ -36,9 +69,15 @@ export const editData = async (good) => {
       headers: { 'Content-Type': 'application/json' },
     })
     .then((response) => {
-      if (!response.ok) {
-        Promise.reject(response);
+      if (response.status === 422 || response.status === 404 || response.status >= 500) {
+        if (response.statusText === '')
+        {callback();}
+      else {
+        callbackText(`${response.status}: ${response.statusText}`);
       }
+      return 'error';
+      }
+      return 'good';
     })
     .catch((error) => {
       console.error(error.message);
@@ -59,20 +98,41 @@ export const deleteData = async (id) => {
     });
 }
 
-export const addData = async (good) => {
-  await fetch('http://localhost:3000/api/goods', {
+export const addData = async (good, callback, callbackText) => {
+  const response = await fetch('http://localhost:3000/api/goods', {
       method: 'POST',
       body: JSON.stringify(good),
       headers: { 'Content-Type': 'application/json' },
     })
+
+    if (response.status === 422 || response.status === 404 || response.status >= 500) {
+      if (response.statusText === '')
+      {callback();}
+    else {
+      callbackText(`${response.status}: ${response.statusText}`);
+    }
+      return 'error';
+    }
+    return 'good';
+/*
     .then((response) => {
-      if (!response.ok) {
-        Promise.reject(response);
+      console.log(response.status)
+      if (response.status === 422 || response.status === 404 || response.status >= 500) {
+        if (response.statusText === '')
+        {callback();}
+      else {
+        callbackText(`${response.status}: ${response.statusText}`);
       }
-    })
-    .catch((error) => {
+        return 'error';
+        //Promise.reject(response);
+      }
+      else
+      return 'good';
+    })*/
+   /* .catch((error) => {
       console.error(error.message);
-    });
+      return 'error';
+    });*/
 }
 
 export const getTotal = async () => {
@@ -102,7 +162,7 @@ export const getCategory = async () => {
     })
     .catch((error) => {
       console.error(error.message);
-      return 0;
+      return [];
     });
   return data;
 }
