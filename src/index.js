@@ -1,7 +1,10 @@
-import { renderGoods, fillCategoryList} from './module/render.js';
-import {formControl, panelSearchControl, imagePopUpControl, modalErrorControl, subPanelControl} from './module/control.js';
-import { createImageContainer, createText, createPicturesBox, createErrorBlock, cteateTextForm } from './module/createElements.js';
-import {getData} from './module/dataControl.js';
+import { renderGoods, fillCategoryList} from './js/render.js';
+import {formControl, panelSearchControl, imagePopUpControl, modalErrorControl, subPanelControl} from './js/control.js';
+import { createImageContainer, createText, createPicturesBox, createErrorBlock, cteateTextForm } from './js/createElements.js';
+import {getData} from './js/dataControl.js';
+
+import './index.css';
+
 {
   const init = async () => {
     const goods = await getData();
